@@ -13,9 +13,7 @@
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>corebot_description</exec_depend>
-  <exec_depend>sensor_fusion</exec_depend>
   <exec_depend>ldlidar_ros2</exec_depend>
-  <exec_depend>rosbridge_server</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
