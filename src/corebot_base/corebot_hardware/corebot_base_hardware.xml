@@ -1,0 +1,9 @@
+<library path="corebot_base_hardware">
+    <class name="corebot_base/CorebotHardware"
+           type="corebot_base::CorebotHardware"
+           base_class_type="hardware_interface::SystemInterface">
+        <description>
+            The ros2_control hardware interface for the corebot.
+        </description>
+    </class>
+</library>

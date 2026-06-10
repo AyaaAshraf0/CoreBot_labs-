@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="CoreBot" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+
+
+  <!-- base_footprint: REP-103 canonical navigation frame (+X = physical forward).
+       The CAD-exported base_link has +X pointing toward the physical BACK of the robot,
+       so we rotate 180° around Z here to give nav2/amcl/ekf a correct coordinate frame. -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 3.14159265358979" />
+    <parent link="base_footprint" />
+    <child  link="base_link" />
+  </joint>
+
+  <link
+    name="base_link">
+
+    <inertial>
+      <origin
+        xyz="0.00784394551943726 -0.00206907203329262 0.0238361267554106"
+        rpy="0 0 0" />
+      <mass
+        value="0.720619554412173" />
+      <inertia
+        ixx="0.00189079403051667"
+        ixy="-3.481257170359E-06"
+        ixz="-3.49085353912958E-07"
+        iyy="0.0032199665438084"
+        iyz="2.54260289259534E-08"
+        izz="0.00509493699820789" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+
+
+
+
+  <link
+    name="left_wheel_link">
+    <inertial>
+      <origin
+        xyz="0.000341205744410267 -0.00265151340000283 0.000416176950951783"
+        rpy="0 0 0" />
+      <mass
+        value="0.0665281531958823" />
+      <inertia
+        ixx="2.77243468800942E-05"
+        ixy="-2.86650709437484E-10"
+        ixz="1.72894861491886E-08"
+        iyy="4.58187875280596E-05"
+        iyz="-3.49634819733671E-10"
+        izz="2.77312603743284E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/left_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.57 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://corebot_description/meshes/left_wheel_link.STL" /> -->
+        <cylinder radius="0.033" length="0.03" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.0721244635665962 -0.113995667243927 0.0197500000000011"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_wheel_link" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="right_wheel_link">
+    <inertial>
+      <origin
+        xyz="-0.000535592229352372 0.00265151339996567 5.25887665734498E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0665281531957075" />
+      <inertia
+        ixx="2.7745098563386E-05"
+        ixy="-4.49956925085184E-10"
+        ixz="-3.42937502101283E-09"
+        iyy="4.58187875280401E-05"
+        iyz="4.41803953423232E-11"
+        izz="2.77105086909655E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/right_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.57 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/right_wheel_link.STL" /> -->
+        <cylinder radius="0.033" length="0.03" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.0721244635665963 0.114188141555245 0.0197499999999999"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_wheel_link" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="lidar_link">
+    <inertial>
+      <origin
+        xyz="0.000647205807404627 -0.000420573868971222 -0.0148285795134831"
+        rpy="0 0 0" />
+      <mass
+        value="0.0510640592103117" />
+      <inertia
+        ixx="1.1781082329315E-05"
+        ixy="4.1375266219586E-08"
+        ixz="4.24017541862351E-08"
+        iyy="1.00882111513099E-05"
+        iyz="-1.03402023284287E-08"
+        izz="1.46862197711085E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/lidar_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 -0.015"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/lidar_link.STL" /> -->
+        <box size="0.05 0.06 0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lidar_joint"
+    type="fixed">
+    <origin
+      xyz="0.0152812747317452 0.00172316028355509 0.0976962267621864"
+      rpy="0 0 1.5707963267948966" />
+    <parent
+      link="base_link" />
+    <child
+      link="lidar_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="cam_link">
+    <inertial>
+      <origin
+        xyz="0.00372448538864374 -3.66482411760134E-05 -0.00648674059304803"
+        rpy="0 0 0" />
+      <mass
+        value="0.00218281553037722" />
+      <inertia
+        ixx="2.7640556040381E-07"
+        ixy="3.43949231622313E-12"
+        ixz="4.86029101891483E-12"
+        iyy="8.63821198701106E-08"
+        iyz="-4.46525635564287E-10"
+        izz="1.95588483305306E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/cam_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 -0.005"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/cam_link.STL" /> -->
+        <box size="0.01 0.02 0.02" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="cam_joint"
+    type="fixed">
+    <origin
+      xyz="-0.113985987682519 0.0391610010314777 0.07155"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="cam_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="forword_ultrasonic_link">
+    <inertial>
+      <origin
+        xyz="-0.00368349827530741 -3.0075254939102E-05 0.000415812695259067"
+        rpy="0 0 0" />
+      <mass
+        value="0.00570817960667324" />
+      <inertia
+        ixx="1.12471046789569E-06"
+        ixy="2.53491861184614E-13"
+        ixz="2.99859440046729E-09"
+        iyy="2.04312339000994E-07"
+        iyz="-1.92030737710336E-14"
+        izz="1.08277212549257E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/forword_ultrasonic_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/forword_ultrasonic_link.STL" /> -->
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="forword_ultrasonic_joint"
+    type="fixed">
+    <origin
+      xyz="-0.110085987682519 0.00993189171218665 0.00800303131721257"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="forword_ultrasonic_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="backword_ultrasonic_link">
+    <inertial>
+      <origin
+        xyz="0.00368349827530742 3.0075254939102E-05 0.000415812695259067"
+        rpy="0 0 0" />
+      <mass
+        value="0.00570817960667325" />
+      <inertia
+        ixx="1.12471046789569E-06"
+        ixy="2.53491861184643E-13"
+        ixz="-2.9985944004673E-09"
+        iyy="2.04312339000994E-07"
+        iyz="1.92030737651431E-14"
+        izz="1.08277212549257E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/backword_ultrasonic_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.101960784313725 0.101960784313725 0.101960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/backword_ultrasonic_link.STL" /> -->
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="backword_ultrasonic_joint"
+    type="fixed">
+    <origin
+      xyz="0.112186355526352 0.00987176533928325 0.00800303131721257"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="backword_ultrasonic_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="caster_wheel_link">
+    <inertial>
+      <origin
+        xyz="-2.66369436924263E-09 2.30357399821912E-12 -6.09883505983989E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0304779477637935" />
+      <inertia
+        ixx="4.74305546850069E-06"
+        ixy="-2.73796086289009E-10"
+        ixz="-5.24309498704731E-13"
+        iyy="4.42645678819398E-06"
+        iyz="4.5342500730237E-16"
+        izz="6.53466014264876E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/caster_wheel_link.STL" /> -->
+        <sphere radius="0.02" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/caster_wheel_link.STL" /> -->
+        <sphere radius="0.02" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="caster_wheel_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0789105455543215 0.00433880634610135 0.0075"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="caster_wheel_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link name="imu_link">
+    <inertial>
+      <origin
+        xyz="0.000647205807404627 -0.000420573868971222 -0.0148285795134831"
+        rpy="0 0 3.14159" />
+      <mass
+        value="0.0510640592103117" />
+      <inertia
+        ixx="1.1781082329315E-05"
+        ixy="4.1375266219586E-08"
+        ixz="4.24017541862351E-08"
+        iyy="1.00882111513099E-05"
+        iyz="-1.03402023284287E-08"
+        izz="1.46862197711085E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 3.14159" />
+      <geometry>
+        <mesh
+          filename="package://corebot_description/meshes/imu_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 -0.015"
+        rpy="0 0 3.14159" />
+      <geometry>
+        <!-- <mesh
+          filename="package://corebot_description/meshes/imu_link.STL" /> -->
+        <box size="0.05 0.06 0.05" />
+      </geometry>
+    </collision>
+  </link>
+  <joint  name="imu_joint"
+    type="fixed">
+    <origin
+      xyz="0.0152812747317452 0.00172316028355509 0.0976962267621864"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="imu_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+
+  <xacro:if value="$(arg sim_mode)">
+    <gazebo reference='lidar_link'>
+      <sensor name='gpu_lidar' type='gpu_lidar'>
+        <topic>lidar</topic>
+        <update_rate>10</update_rate>
+        <gz_frame_id>lidar_link</gz_frame_id>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>640</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14</min_angle>
+              <max_angle>3.14</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>1</samples>
+              <resolution>0.01</resolution>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.08</min>
+            <max>6.0</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+        <always_on>1</always_on>
+        <visualize>true</visualize>
+        <plugin
+          filename="libignition-gazebo-sensors-system.so"
+          name="ignition::gazebo::systems::Sensors">
+          <render_engine>ogre2</render_engine>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:if>
+
+</robot>

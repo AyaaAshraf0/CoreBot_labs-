@@ -1,0 +1,6 @@
+string action    # "add", "remove", or "switch"
+string ssid
+string password  # only required for "add"
+---
+bool success
+string message
