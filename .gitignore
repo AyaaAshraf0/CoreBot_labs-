@@ -1,0 +1,8 @@
+
+
+# Ignore common build and ROS artifacts inside workspace
+build/
+install/
+log/
+*.pyc
+__pycache__/
