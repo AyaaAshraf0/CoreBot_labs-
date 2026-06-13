@@ -215,6 +215,9 @@ void CorebotHardware::parse_serial_packet(const std::vector<uint8_t> & packet)
     if (imu_publisher_)
         imu_publisher_->publish(imu_msg);
 
+    // Publish encoder ticks message for external consumers
+    // (moved to read() so totals reflect compute_encoder_delta updates)
+
     // Signal to read() that fresh encoder data is available this cycle
     new_encoder_data_ = true;
 }
@@ -247,6 +250,7 @@ CallbackReturn CorebotHardware::on_init(const hardware_interface::HardwareInfo &
 
     node_ = rclcpp::Node::make_shared("corebot_hardware_node");
     imu_publisher_ = node_->create_publisher<sensor_msgs::msg::Imu>("imu/data", 10);
+    encoder_publisher_ = node_->create_publisher<corebot_interfaces::msg::EncoderTicks>("encoder_ticks", 10);
 
     RCLCPP_INFO(logger_, "Finished initialization");
     return CallbackReturn::SUCCESS;
@@ -309,15 +313,27 @@ return_type CorebotHardware::read(
     if (new_encoder_data_)
     {
         missed_frame_cycles_ = 0;
-        // compute_encoder_delta() updates total_ticks internally.
-        // Do NOT accumulate its return value — that is the double-accumulation bug.
+        // compute_encoder_delta() updates total_ticks internally and returns the per-cycle delta.
         // Physical wiring: rotating right wheel → encoder_left channel, rotating left wheel → encoder_right channel.
         // controllers.yaml uses swapped joint names:
         //   left_wheel_  = right_wheel_joint (physical right) → must receive physical LEFT encoder signal for correct angular odometry
         //   right_wheel_ = left_wheel_joint  (physical left)  → must receive physical RIGHT encoder signal
         // Swapping here makes diff_drive_controller's angular = (v_right - v_left) = (phys_right - phys_left) ✓
-        left_wheel_.compute_encoder_delta(encoder_left);   // encoder_right = physical left wheel
-        right_wheel_.compute_encoder_delta(encoder_right);   // encoder_left  = physical right wheel
+        int32_t delta_left  = left_wheel_.compute_encoder_delta(encoder_left);   // encoder_right = physical left wheel
+        int32_t delta_right = right_wheel_.compute_encoder_delta(encoder_right);  // encoder_left  = physical right wheel
+
+        // Publish encoder ticks message (now that totals were updated)
+        if (encoder_publisher_ && node_)
+        {
+            corebot_interfaces::msg::EncoderTicks enc_msg;
+            enc_msg.header.stamp = node_->now();
+            enc_msg.header.frame_id = "base_link";
+            enc_msg.delta_left  = static_cast<int16_t>(delta_left);
+            enc_msg.delta_right = static_cast<int16_t>(delta_right);
+            enc_msg.total_ticks_left  = left_wheel_.total_ticks;
+            enc_msg.total_ticks_right = right_wheel_.total_ticks;
+            encoder_publisher_->publish(enc_msg);
+        }
     }
     else
     {

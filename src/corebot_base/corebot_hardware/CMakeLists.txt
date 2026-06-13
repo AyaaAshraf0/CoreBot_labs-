@@ -17,6 +17,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(corebot_interfaces REQUIRED)
 
 add_library(corebot_base_hardware SHARED 
           src/corebot_base_hardware.cpp 
@@ -32,6 +33,7 @@ ament_target_dependencies(
   pluginlib
   rclcpp
   rclcpp_lifecycle
+  corebot_interfaces
 )
 
 # Export hardware plugin

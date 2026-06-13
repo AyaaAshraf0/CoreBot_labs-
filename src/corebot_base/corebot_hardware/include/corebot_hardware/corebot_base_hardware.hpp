@@ -28,6 +28,7 @@
 #include <sstream>
 
 #include "sensor_msgs/msg/imu.hpp"
+#include "corebot_interfaces/msg/encoder_ticks.hpp"
 
 using hardware_interface::return_type;
 using hardware_interface::CallbackReturn;
@@ -105,6 +106,7 @@ private:
 
     rclcpp::Node::SharedPtr node_;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_publisher_;
+    rclcpp::Publisher<corebot_interfaces::msg::EncoderTicks>::SharedPtr encoder_publisher_;
 };
 
 } // namespace corebot_base
