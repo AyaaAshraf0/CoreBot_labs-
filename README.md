@@ -144,9 +144,9 @@ These topics are published directly by the hardware plugin from raw serial data.
 Raw IMU data from the MPU-6050. All three covariance matrices are set to `-1` (REP-145 convention) — none of the fields are valid for direct use:
 
 ```
-linear_acceleration   →  m/s²   raw, uncalibrated  (covariance[0] = -1)
-angular_velocity      →  rad/s  raw, uncalibrated  (covariance[0] = -1)
-orientation           →  NOT PROVIDED               (covariance[0] = -1)
+linear_acceleration   →  m/s²   raw, uncalibrated  (covariance[0] = -1, not valid)
+angular_velocity      →  rad/s  raw, uncalibrated  (covariance[0] = -1, not valid)
+orientation           →  not computed by hardware   (covariance[0] = -1, not valid)
 ```
 
 > ⚠️ Do not subscribe to `/imu/data` in your application. Use `/imu` (Section 3.2).
@@ -318,6 +318,8 @@ Standard ROS2 infrastructure topics. You generally do not need to interact with 
 
 A keyboard teleoperation node that publishes `TwistStamped` directly to `/diff_controller/cmd_vel`.
 
+> **Note:** The terminal banner printed by the node shows `/diff_drive_controller/cmd_vel` — this is a display-only typo in the source. The node publishes to `/diff_controller/cmd_vel` as listed above.
+
 ### Run
 
 ```bash
@@ -392,7 +394,7 @@ type:     SystemInterface
 | `left_wheel_joint` | `velocity` | rad/s |
 | `right_wheel_joint` | `velocity` | rad/s |
 
-Commands are received as rad/s and converted to PWM (0–999) internally.
+Commands are received as rad/s and converted to signed PWM (−999 to +999) internally, where sign encodes rotation direction.
 
 ### Hardware Parameters (URDF / ros2_control XML)
 
