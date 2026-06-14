@@ -91,32 +91,40 @@ flowchart LR
 
 ## 2. Quick Start
 
+### Get the repository
+
+Repository: <https://github.com/AyaaAshraf0/CoreBot_labs->
+
+Download or clone it however you prefer. Once you have it, place the packages under your workspace `src/` directory.
+
 ### Full robot bringup
+
 ```bash
+cd ~/ros2_ws
+colcon build
+source install/setup.bash
 ros2 launch corebot_bringup corebot_bringup.launch.py
 ```
-Brings up: hardware interface, IMU calibration, LiDAR (LD06), and controller manager.
 
 To launch without the LiDAR:
+
 ```bash
 ros2 launch corebot_bringup corebot_bringup.launch.py use_lidar:=false
 ```
 
 ### Keyboard teleoperation
+
 ```bash
 ros2 run corebot_bringup teleop_node
 ```
+
 See [Section 4](#4-teleop-node) for key bindings and parameters.
 
 ### EKF sensor fusion (optional)
 
-The EKF is a separate package (`sensor_fusion`). Install it first:
+The `sensor_fusion` package is included in the repository. Make sure it is present under `src/` before building, then launch it after the main bringup:
 
 ```bash
-cd ~/ros2_ws/src
-git clone <SENSOR_FUSION_REPO_URL>
-cd ~/ros2_ws && colcon build --packages-select sensor_fusion
-source install/setup.bash
 ros2 launch sensor_fusion odom_imu_ekf.launch.py
 ```
 
@@ -506,7 +514,7 @@ See `ekf_odom_imu.yaml` for covariance tuning.
 | Launch File | Package | Args | What it starts |
 |---|---|---|---|
 | `corebot_bringup.launch.py` | `corebot_bringup` | `use_lidar` (default: `true`) | Hardware interface, IMU calibration, controller manager, LiDAR (LD06) |
-| `odom_imu_ekf.launch.py` | `sensor_fusion` | — | EKF only — install separately (see Section 2) |
+| `odom_imu_ekf.launch.py` | `sensor_fusion` | — | EKF only — run after main bringup |
 
 ---
 
